@@ -1,0 +1,27 @@
+{
+	"geode": "5.5.3",
+	"gd": {
+		"win": "2.2081",
+		"android": "2.2081",
+		"mac": "2.2081",
+		"ios": "2.2081"
+	},
+	"id": "glow12.fun-custom-objects",
+	"name": "Fun Custom Objects",
+	"version": "v1.0.0",
+	"developer": "glow12",
+	"description": "Some fun custom Geometry Dash objects!",
+	"dependencies": {
+		"glow12.custom-objects-api": ">=v1.0.0"
+	},
+	"resources": {
+        "spritesheets": {
+            "CustomObjects": [
+                "resources/sprites/*.png"
+            ],
+            "cat": [
+                "resources/cat/*.png"
+            ]
+        }
+    }
+}
