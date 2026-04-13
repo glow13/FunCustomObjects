@@ -22,4 +22,12 @@ endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
+CPMAddPackage(
+  NAME CustomObjectsAPI
+  GITHUB_REPOSITORY glow13/CustomObjectsAPI
+  GIT_TAG c239675
+  DOWNLOAD_ONLY ON
+)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CustomObjectsAPI_SOURCE_DIR}/include)
+
 setup_geode_mod(${PROJECT_NAME})
