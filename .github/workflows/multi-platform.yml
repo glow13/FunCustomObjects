@@ -44,7 +44,7 @@ jobs:
         with:
           combine: true
           target: ${{ matrix.config.target }}
-          build-args: -DARTIFACT_DOWNLOAD_URL="${{ inputs.artifact_url }}"
+          configure-args: -DARTIFACT_DOWNLOAD_URL="${{ inputs.artifact_url }}"
 
   package:
     name: Package builds

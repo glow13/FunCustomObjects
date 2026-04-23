@@ -42,4 +42,4 @@ endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
-setup_geode_mod(${PROJECT_NAME} EXTERNALS glow12.custom-objects-api)
+setup_geode_mod(${PROJECT_NAME} EXTERNALS glow12.custom-objects-api:0.1.0)
