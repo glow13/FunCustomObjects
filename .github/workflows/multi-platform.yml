@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       artifact_url:
-        description: "CustomObjectsAPI URL"
+        description: "CustomObjectsAPI Artifact URL"
         type: string
         required: true
         default: ""
@@ -44,7 +44,7 @@ jobs:
         with:
           combine: true
           target: ${{ matrix.config.target }}
-          build-args: -DARTIFACT_DOWNLOAD_URL=${{ inputs.artifact_url }}
+          build-args: -DARTIFACT_DOWNLOAD_URL="${{ inputs.artifact_url }}"
 
   package:
     name: Package builds
