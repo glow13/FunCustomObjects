@@ -20,14 +20,25 @@ else()
     message(STATUS "Found Geode: $ENV{GEODE_SDK}")
 endif()
 
+if (DEFINED ENV{CI})
+    message(STATUS "artifact url: ${ARTIFACT_URL}")
+
+    set(MOD_DOWNLOAD_URL "https://nightly.link/glow13/CustomObjectsAPI/actions/runs/24854799304/Build%20Output.zip")
+    set(DIRECTORY "${CMAKE_BINARY_DIR}/geode-deps/glow12.custom-objects-api")
+
+    set(BUILD_OUTPUT_FILE "${DIRECTORY}/Build Output.zip")
+    set(MOD_GEODE_FILE "${DIRECTORY}/glow12.custom-objects-api.geode")
+
+    file(MAKE_DIRECTORY "${DIRECTORY}")
+    file(DOWNLOAD "${MOD_DOWNLOAD_URL}" "${BUILD_OUTPUT_FILE}")
+
+    execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf "${BUILD_OUTPUT_FILE}" WORKING_DIRECTORY "${DIRECTORY}")
+    execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf "${MOD_GEODE_FILE}" WORKING_DIRECTORY "${DIRECTORY}")
+
+    file(REMOVE "${BUILD_OUTPUT_FILE}")
+    file(REMOVE "${MOD_GEODE_FILE}")
+endif()
+
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
-CPMAddPackage(
-  NAME CustomObjectsAPI
-  GITHUB_REPOSITORY glow13/CustomObjectsAPI
-  GIT_TAG c239675
-  DOWNLOAD_ONLY ON
-)
-target_include_directories(${PROJECT_NAME} PUBLIC ${CustomObjectsAPI_SOURCE_DIR}/include)
-
-setup_geode_mod(${PROJECT_NAME})
+setup_geode_mod(${PROJECT_NAME} EXTERNALS glow12.custom-objects-api)
