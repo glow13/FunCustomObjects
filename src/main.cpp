@@ -10,6 +10,8 @@
 
 #include <Geode/binding/SetupCameraModePopup.hpp>
 
+#include "PopupTriggerObject.hpp"
+
 using namespace geode::prelude;
 
 class $object(ContainerGameObject, CustomRingObject) {
@@ -54,8 +56,6 @@ public:
 };
 
 $execute {
-    CustomObjectsAPI::setCollisionOffset(4);
-
     CustomObjectsAPI::registerCustomObject("frown-block.png"_spr).setBoxSize(20, 20).setObjectType(GameObjectType::Hazard);
     CustomObjectsAPI::registerCustomObject<SmileGameObject>("smile-block.png"_spr);
     CustomObjectsAPI::registerCustomObject<ContainerGameObject>("container.png"_spr);
@@ -111,4 +111,7 @@ $execute {
 
     CustomObjectsAPI::registerCustomObject<CustomAnimatedObject>("cat_001.png"_spr).setFramesCount(94).setFrameTime(0.03).setEditorTabPriority(-1);
     CustomObjectsAPI::registerCustomAnimationSprites("cat_001.png"_spr, 94);
+
+	CustomObjectsAPI::registerCustomObject<PopupTriggerObject>("popup_trigger.png"_spr, 28, 31).setEditorTabPriority(-10)
+		.onEditObjectButton([](auto obj, auto objs) { SetupPopupTriggerPopup::create(obj, objs)->show(); });
 }
