@@ -21,7 +21,7 @@ else()
 endif()
 
 if (DEFINED ENV{CI})
-    message(STATUS "artifact url: ${ARTIFACT_DOWNLOAD_URL}")
+    message(STATUS "Downloading CustomObjectsAPI from '${ARTIFACT_DOWNLOAD_URL}'")
 
     set(DIRECTORY "${CMAKE_BINARY_DIR}/geode-deps/glow12.custom-objects-api")
 
@@ -38,6 +38,8 @@ if (DEFINED ENV{CI})
 
     file(REMOVE "${BUILD_OUTPUT_FILE}")
     file(REMOVE "${MOD_GEODE_FILE}")
+
+    message(STATUS "Finished downloading and extracting CustomObjectsAPI!")
 endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
