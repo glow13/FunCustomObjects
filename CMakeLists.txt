@@ -21,19 +21,20 @@ else()
 endif()
 
 if (DEFINED ENV{CI})
-    message(STATUS "artifact url: ${ARTIFACT_URL}")
+    message(STATUS "artifact url: ${ARTIFACT_DOWNLOAD_URL}")
 
-    set(MOD_DOWNLOAD_URL "https://nightly.link/glow13/CustomObjectsAPI/actions/runs/24854799304/Build%20Output.zip")
     set(DIRECTORY "${CMAKE_BINARY_DIR}/geode-deps/glow12.custom-objects-api")
 
     set(BUILD_OUTPUT_FILE "${DIRECTORY}/Build Output.zip")
     set(MOD_GEODE_FILE "${DIRECTORY}/glow12.custom-objects-api.geode")
 
     file(MAKE_DIRECTORY "${DIRECTORY}")
-    file(DOWNLOAD "${MOD_DOWNLOAD_URL}" "${BUILD_OUTPUT_FILE}")
+    file(DOWNLOAD "${ARTIFACT_URL}" "${BUILD_OUTPUT_FILE}")
 
     execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf "${BUILD_OUTPUT_FILE}" WORKING_DIRECTORY "${DIRECTORY}")
     execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf "${MOD_GEODE_FILE}" WORKING_DIRECTORY "${DIRECTORY}")
+
+    file(WRITE "${DIRECTORY}/geode-dep-options.json" "{ \"required\": true }")
 
     file(REMOVE "${BUILD_OUTPUT_FILE}")
     file(REMOVE "${MOD_GEODE_FILE}")
