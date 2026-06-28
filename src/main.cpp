@@ -1,12 +1,12 @@
 #include <glow12.custom-objects-api/include/CustomObjectsAPI.hpp>
 
-#include <glow12.custom-objects-api/include/object/CustomTriggerObject.hpp>
-#include <glow12.custom-objects-api/include/object/CustomRingObject.hpp>
-#include <glow12.custom-objects-api/include/object/CustomPadObject.hpp>
-#include <glow12.custom-objects-api/include/object/CustomPortalObject.hpp>
-#include <glow12.custom-objects-api/include/object/CustomRotateObject.hpp>
-#include <glow12.custom-objects-api/include/object/CustomCollectibleObject.hpp>
-#include <glow12.custom-objects-api/include/object/CustomAnimatedObject.hpp>
+#include <glow12.custom-objects-api/objects/CustomTriggerObject.hpp>
+#include <glow12.custom-objects-api/objects/CustomRingObject.hpp>
+#include <glow12.custom-objects-api/objects/CustomPadObject.hpp>
+#include <glow12.custom-objects-api/objects/CustomPortalObject.hpp>
+#include <glow12.custom-objects-api/objects/CustomRotateObject.hpp>
+#include <glow12.custom-objects-api/objects/CustomCollectibleObject.hpp>
+#include <glow12.custom-objects-api/objects/CustomAnimatedObject.hpp>
 
 #include <Geode/binding/SetupCameraModePopup.hpp>
 
@@ -55,6 +55,20 @@ public:
     } // activateCustomTrigger
 };
 
+class $object(DecayBlock, CustomGameObject) {
+    int decay;
+
+    void setupCustomObject() override {
+        decay = rand() % 10;
+    } // setupCustomObject
+
+    void resetCustomObject() override {
+        if (decay < 0 && !m_editorEnabled) {
+            GJBaseGameLayer::get()->destroyObject(this);
+        } else decay--;
+    } // resetCustomObject
+};
+
 $execute {
     CustomObjectsAPI::registerCustomObject("frown-block.png"_spr).setBoxSize(20, 20).setObjectType(GameObjectType::Hazard);
     CustomObjectsAPI::registerCustomObject<SmileGameObject>("smile-block.png"_spr);
@@ -75,7 +89,9 @@ $execute {
 
     CustomObjectsAPI::registerCustomObject("spike_01_001.png").setGlowSprite("spike_01_glow_001.png").setBoxSize(5, 20).setObjectType(GameObjectType::Hazard);
     CustomObjectsAPI::registerCustomObject("block005_02_001.png", 60).setDetailSprite("block005_02_color_001.png", 60).setObjectType(GameObjectType::Decoration);
-    CustomObjectsAPI::registerCustomObject("player_134_001.png").setDetailSprite("player_134_2_001.png").setObjectType(GameObjectType::Decoration).setDisableBatchRender();
+
+    // CCSpriteFrameCache::get()->addSpriteFramesWithFile("icons/player_134.plist");
+    // CustomObjectsAPI::registerCustomObject("player_134_001.png").setDetailSprite("player_134_2_001.png").setObjectType(GameObjectType::Decoration);
 
     CustomObjectsAPI::registerCustomObject<CustomPadObject>("bump_03_001.png").setGlowSprite("bump_03_glow_001.png").setGlowColor(255, 0, 255).setParticleColor(255, 0, 255).setObjectOffset(0, -13).setBatchMode(0)
         .onActivateCustomObject([](CustomPadObject* obj, auto level, auto player) {
@@ -114,4 +130,6 @@ $execute {
 
 	CustomObjectsAPI::registerCustomObject<PopupTriggerObject>("popup_trigger.png"_spr, 28, 31).setEditorTabPriority(-10)
 		.onEditObjectButton([](auto obj, auto objs) { SetupPopupTriggerPopup::create(obj, objs)->show(); });
+
+    CustomObjectsAPI::registerCustomObject<DecayBlock>("square_01_001.png").setGlowSprite("blockOutline_01_glow_001.png").setObjectType(GameObjectType::Solid);
 }

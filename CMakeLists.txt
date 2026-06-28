@@ -20,6 +20,8 @@ else()
     message(STATUS "Found Geode: $ENV{GEODE_SDK}")
 endif()
 
+add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
+
 if (DEFINED ENV{CI})
     message(STATUS "Downloading CustomObjectsAPI from '${ARTIFACT_DOWNLOAD_URL}'")
 
@@ -40,8 +42,8 @@ if (DEFINED ENV{CI})
     file(REMOVE "${MOD_GEODE_FILE}")
 
     message(STATUS "Finished downloading and extracting CustomObjectsAPI!")
+
+    setup_geode_mod(${PROJECT_NAME} EXTERNALS glow12.custom-objects-api:1.0.0-beta.1)
+else()
+    setup_geode_mod(${PROJECT_NAME})
 endif()
-
-add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
-
-setup_geode_mod(${PROJECT_NAME} EXTERNALS glow12.custom-objects-api:0.1.0)
