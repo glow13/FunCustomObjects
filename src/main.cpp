@@ -14,45 +14,17 @@
 
 using namespace geode::prelude;
 
-class $object(ContainerGameObject, CustomRingObject) {
-public:
-    float m_bouncePower = 1;
-
-    void setupCustomObject() override {
-        if (m_particle) {
-            m_particle->setStartColor(ccColor4F{ 0, 0, 0, 255 });
-            m_particle->setEndColor(ccColor4F{ 0, 0, 0, 0 });
-            m_particle->setBlendFunc(kCCBlendFuncDisable);
-        } // if
-    } // setupCustomObject
-
-    void resetCustomObject() override { m_bouncePower = 1; }
-
-    void activateCustomObject(GJBaseGameLayer* level, PlayerObject* player) override {
-        player->propellPlayer(m_bouncePower * 0.35, true, 12);
-        player->animatePlatformerJump(1.0f);
-        m_bouncePower += 0.1;
-    } // pressCustomRing
-};
-
-class $object(SmileGameObject, CustomTriggerObject) {
-public:
-    int m_bouncePower;
-
-    void setupCustomObject() override {
-        m_isTouchTriggered = true;
-        m_isMultiTriggered = true;
-        m_duration = 0;
-    } // setupCustomObject
+class $object(MyCustomPad, CustomPadObject) {
+    float bouncePower = 0.4f;
 
     void resetCustomObject() override {
-        m_bouncePower = 8;
+        bouncePower = 0.4f;
     } // resetCustomObject
 
     void activateCustomObject(GJBaseGameLayer* level, PlayerObject* player) override {
-        player->setYVelocity(m_bouncePower, 1);
-        m_bouncePower++;
-    } // activateCustomTrigger
+        bumpPlayer(player, bouncePower, GameObjectType::RedJumpPad);
+        bouncePower += 0.1f;
+    } // activateCustomObject
 };
 
 class $object(DecayBlock, CustomGameObject) {
@@ -70,9 +42,15 @@ class $object(DecayBlock, CustomGameObject) {
 };
 
 $execute {
+    CustomObjectsAPI::registerCustomObject<CustomPadObject>("smile-block.png"_spr).setBoxSize(30, 30).setParticleColor(0, 0, 0)
+        .onActivateCustomObject([](CustomPadObject* obj, auto, PlayerObject* player) {
+            player->setPosition(obj->getPosition() + CCPoint(0, (rand() % 9 + 2) * 30));
+            player->setYVelocity(1, 1);
+        });
+
     CustomObjectsAPI::registerCustomObject("frown-block.png"_spr).setBoxSize(20, 20).setObjectType(GameObjectType::Hazard);
-    CustomObjectsAPI::registerCustomObject<SmileGameObject>("smile-block.png"_spr);
-    CustomObjectsAPI::registerCustomObject<ContainerGameObject>("container.png"_spr);
+    CustomObjectsAPI::registerCustomObject<MyCustomPad>("bump_02_001.png").setGlowSprite("bump_02_glow_001.png")
+        .setGlowColor(255, 100, 100).setParticleColor(255, 0, 0).setObjectOffset(0, -12).setEditorTabPriority(1).setBoxSize(29, 7);
 
     CustomObjectsAPI::registerCustomObject("block-1.png"_spr);
     CustomObjectsAPI::registerCustomObject("block-2.png"_spr);
@@ -87,13 +65,11 @@ $execute {
     CustomObjectsAPI::registerCustomObject("block-11.png"_spr, 60);
     CustomObjectsAPI::registerCustomObject("block-12.png"_spr, 60);
 
-    CustomObjectsAPI::registerCustomObject("spike_01_001.png").setGlowSprite("spike_01_glow_001.png").setBoxSize(5, 20).setObjectType(GameObjectType::Hazard);
+    CustomObjectsAPI::registerCustomObject("spike_01_001.png").setGlowSprite("spike_01_glow_001.png").setBoxSize(5, 24).setObjectType(GameObjectType::Hazard);
     CustomObjectsAPI::registerCustomObject("block005_02_001.png", 60).setDetailSprite("block005_02_color_001.png", 60).setObjectType(GameObjectType::Decoration);
 
-    // CCSpriteFrameCache::get()->addSpriteFramesWithFile("icons/player_134.plist");
-    // CustomObjectsAPI::registerCustomObject("player_134_001.png").setDetailSprite("player_134_2_001.png").setObjectType(GameObjectType::Decoration);
-
-    CustomObjectsAPI::registerCustomObject<CustomPadObject>("bump_03_001.png").setGlowSprite("bump_03_glow_001.png").setGlowColor(255, 0, 255).setParticleColor(255, 0, 255).setObjectOffset(0, -13).setBatchMode(0)
+    CustomObjectsAPI::registerCustomObject<CustomPadObject>("bump_03_001.png").setGlowSprite("bump_03_glow_001.png")
+        .setGlowColor(255, 0, 255).setParticleColor(255, 0, 255).setObjectOffset(0, -13).setBatchMode(0).setEditorTabPriority(1)
         .onActivateCustomObject([](CustomPadObject* obj, auto level, auto player) {
             obj->bumpPlayer(player, 0.65f, GameObjectType::PinkJumpPad);
             if (rand() % 50 == 0) level->destroyPlayer(player, obj);
