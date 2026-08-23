@@ -1,24 +1,34 @@
+#include <glow12.custom-objects-api/include/CustomObjectBase.hpp>
+#include <glow12.custom-objects-api/objects/CustomTriggerObject.hpp>
+
 #include <Geode/binding/SetupTriggerPopup.hpp>
 #include <Geode/ui/TextInput.hpp>
 #include <Geode/ui/Popup.hpp>
 
 using namespace geode::prelude;
 
-class $object(PopupTriggerObject, CustomTriggerObject) {
+class $registerObject(PopupTriggerObject, CustomTriggerObject) {
 public:
     FLAlertLayer* popup;
 
     std::string title;
 	std::string description;
 
+    static void onRegisterConfig(CustomObjectConfig&& config) {
+        config
+            .setMainSprite("popup_trigger.png"_spr, 28, 31)
+            .setEditorTabPriority(-10)
+            .onEditObject((EditObjectCallback)PopupTriggerObject::onEditObject);
+    }
+
 	void setupCustomObject() override {
-		setupObjectProperty(343, title);
-		setupObjectProperty(344, description);
-	} // setupCustomObject
+		bindObjectProperty(343, title);
+		bindObjectProperty(344, description);
+	}
 
     void resetCustomObject() override {
         if (popup) popup->onBtn1(this); // Close popup
-    } // resetCustomObject
+    }
 
 	void activateCustomObject(GJBaseGameLayer* level, PlayerObject* player) override {
         if (popup) return; // Don't open another popup if one already exists
@@ -28,7 +38,9 @@ public:
 
         auto callback = [this](auto, bool) { popup = nullptr; };
         popup = geode::createQuickPopup(titleStr.c_str(), descStr, "Ok", nullptr, callback);
-    } // activateCustomTrigger
+    }
+
+    static void onEditObject(GameObject*, cocos2d::CCArray*);
 };
 
 class SetupPopupTriggerPopup : public SetupTriggerPopup {
@@ -41,11 +53,11 @@ public:
         if (popup->init(obj, objs)) {
             popup->autorelease();
             return popup;
-        } // if
+        }
 
         delete popup;
         return nullptr;
-    } // create
+    }
 
     bool init(PopupTriggerObject* obj, cocos2d::CCArray* objs) {
         if (!SetupTriggerPopup::init(obj, objs, 300, 220, 1)) return false;
@@ -79,14 +91,18 @@ public:
 
         postSetup();
         return true;
-    } // init
+    }
 
     void onClose(cocos2d::CCObject* sender) override {
         for (auto obj : getObjects()->asExt()) {
             auto trigger = static_cast<PopupTriggerObject*>(obj);
             trigger->title = title;
             trigger->description = description;
-        } // for
+        }
         SetupTriggerPopup::onClose(sender);
-    } // onClose
+    }
 };
+
+void PopupTriggerObject::onEditObject(GameObject *obj, cocos2d::CCArray *objs) {
+    SetupPopupTriggerPopup::create(static_cast<PopupTriggerObject*>(obj), objs)->show();
+}

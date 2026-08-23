@@ -43,7 +43,7 @@ if (DEFINED ENV{CI})
 
     message(STATUS "Finished downloading and extracting CustomObjectsAPI!")
 
-    setup_geode_mod(${PROJECT_NAME} EXTERNALS glow12.custom-objects-api:1.0.0-beta.1)
+    setup_geode_mod(${PROJECT_NAME} EXTERNALS glow12.custom-objects-api:1.0.0-beta.2)
 else()
     setup_geode_mod(${PROJECT_NAME})
 endif()
