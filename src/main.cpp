@@ -84,15 +84,15 @@ $execute {
     CustomObjectsAPI::registerCustomObject("tall-spike"_spr).setMainSprite("spike_01_001.png").setGlowSprite("spike_01_glow_001.png").setBoxSize(5, 24).setObjectType(GameObjectType::Hazard);
     CustomObjectsAPI::registerCustomObject("big-deco"_spr).setMainSprite("block005_02_001.png", 60).setDetailSprite("block005_02_color_001.png", 60).setObjectType(GameObjectType::Decoration);
 
-    CustomObjectsAPI::registerCustomObject<CustomPadObject>("evil-pad"_spr).setMainSprite("bump_03_001.png").setGlowSprite("bump_03_glow_001.png")
+    CustomObjectsAPI::registerCustomObject<CustomPadObject>("evil-pad"_spr).setMainSprite("bump_03_001.png", false).setGlowSprite("bump_03_glow_001.png", false)
         .setGlowColor(255, 0, 255).setParticleColor(255, 0, 255).setObjectOffset(0, -13).setBatchMode(0).setEditorTabPriority(1)
         .onActivateCustomObject([](GameObject* obj, auto level, auto player) {
             static_cast<CustomPadObject*>(obj)->bumpPlayer(player, 0.65f, GameObjectType::PinkJumpPad);
             if (rand() % 50 == 0) level->destroyPlayer(player, obj);
         });
 
-    CustomObjectsAPI::registerCustomObject<CustomRotateObject>("fake-saw"_spr).setMainSprite("blade_02_001.png").setGlowSprite("blade_02_glow_001.png").setBoxRadius(22).setObjectType(GameObjectType::Hazard).setBatchMode(0);
-    CustomObjectsAPI::registerCustomObject<CustomPortalObject>("random-portal"_spr).setMainSprite("portal_18_front_001.png").setDetailSprite("portal_18_back_001.png").setParticleColor(255, 255, 0).setBatchMode(1)
+    CustomObjectsAPI::registerCustomObject<CustomRotateObject>("fake-saw"_spr).setMainSprite("blade_02_001.png", false).setGlowSprite("blade_02_glow_001.png", false).setBoxRadius(22).setObjectType(GameObjectType::Hazard).setBatchMode(0);
+    CustomObjectsAPI::registerCustomObject<CustomPortalObject>("random-portal"_spr).setMainSprite("portal_18_front_001.png", false).setDetailSprite("portal_18_back_001.png", false).setParticleColor(255, 255, 0).setBatchMode(1)
         .onEditObject([](auto obj, auto objs) {
             SetupCameraModePopup::create(static_cast<CustomPortalObject*>(obj), objs)->show();
         })
@@ -112,7 +112,7 @@ $execute {
             static_cast<CustomPortalObject*>(obj)->playShineEffect((GameObjectType)type);
         });
 
-    CustomObjectsAPI::registerCustomObject<CustomCollectibleObject>("custom-key"_spr).setMainSprite("d_key01_001.png").setDetailSprite("d_key01_color_001.png").setBatchMode(0)
+    CustomObjectsAPI::registerCustomObject<CustomCollectibleObject>("custom-key"_spr).setMainSprite("d_key01_001.png", false).setDetailSprite("d_key01_color_001.png", false).setBatchMode(0)
         .onActivateCustomObject([](auto, auto, auto) {
             log::info("COLLECTED ME!!!!!!!");
         });
